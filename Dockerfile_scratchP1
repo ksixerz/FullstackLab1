@@ -1,0 +1,25 @@
+#!/bin/bash
+FROM scratch
+ADD files/alpine-minirootfs-3.15.4-x86.tar.gz /
+# Upgrade existing packages in the base image
+RUN apk --no-cache --update upgrade 
+
+
+#RUN apk --no-cache --update upgrade #RUN apk upgrade #--no-cache
+RUN apk add openrc #--no-cache
+
+RUN apk add apache2 php$phpverx-apache2
+
+COPY plik.php /var/www/localhost/htdocs/index.php
+RUN rm -rf /var/www/localhost/htdocs/index.html
+
+#RUN rc-update add apache2 default
+#RUN rc-update add php-fpm7 default
+
+#RUN rc-service apache2 restart
+#RUN rc-service php-fpm7 restart
+
+EXPOSE 80
+CMD ["-D", "FOREGROUND"]
+# Srart httpd when container runs
+ENTRYPOINT ["/usr/sbin/httpd"]

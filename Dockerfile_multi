@@ -1,0 +1,19 @@
+ARG VERSION=1.10
+FROM node AS build1
+ARG VERSION
+RUN mkdir -p /var/node
+WORKDIR /var/node
+COPY index.js /var/node/index.js
+COPY package.json /var/node/package.json
+
+RUN echo $(ls -1 /var/node)
+RUN npm install
+
+
+FROM node:alpine
+ARG VERSION
+ENV NODE_ENV="production_${VERSION}"
+COPY --from=build1 /var/node /var/node
+WORKDIR /var/node
+EXPOSE 3000
+ENTRYPOINT ["./bin/www"]

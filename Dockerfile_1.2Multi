@@ -1,0 +1,18 @@
+ARG VERSION=1.10
+FROM node AS build1
+ARG VERSION
+RUN mkdir -p /var/node
+WORKDIR /var/node
+RUN git clone https://github.com/linuxacademy/content-weather-app.git
+WORKDIR /var/node/content-weather-app
+RUN echo $(ls -1 /var/node)
+RUN npm install
+
+
+FROM node:alpine
+ARG VERSION
+ENV NODE_ENV="production_${VERSION}"
+COPY --from=build1 /var/node /var/node
+WORKDIR /var/node/content-weather-app
+EXPOSE 3000
+ENTRYPOINT ["./bin/www"]

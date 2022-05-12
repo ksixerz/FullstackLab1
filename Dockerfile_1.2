@@ -1,0 +1,8 @@
+FROM node:alpine
+ARG VERSION
+ENV NODE_ENV="production_${VERSION}"
+
+COPY app /var/node/app
+WORKDIR /var/node/app
+EXPOSE 3000
+ENTRYPOINT ["./bin/www"]
